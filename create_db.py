@@ -1,0 +1,48 @@
+import sqlite3
+import os
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, "database.db")
+
+conn = sqlite3.connect(DB_PATH)
+cursor = conn.cursor()
+
+# ตารางผู้ใช้
+cursor.execute("""
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    role TEXT NOT NULL
+)
+""")
+
+cursor.execute("""
+INSERT INTO users (username, password, role)
+VALUES (?, ?, ?)
+""", ("jojo", "2550", "admin"))
+
+cursor.execute("""
+INSERT INTO users (username, password, role)
+VALUES (?, ?, ?)
+""", ("usermax", "1111", "user"))
+
+# ตารางแจ้งซ่อม
+cursor.execute("""
+CREATE TABLE repairs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT NOT NULL,
+    fullname TEXT NOT NULL,
+    department TEXT NOT NULL,
+    equipment TEXT NOT NULL,
+    problem TEXT NOT NULL,
+    image TEXT,
+    video TEXT,
+    status TEXT DEFAULT 'รอดำเนินการ'
+)
+""")
+
+conn.commit()
+conn.close()
+
+print("สร้างฐานข้อมูลสำเร็จ")

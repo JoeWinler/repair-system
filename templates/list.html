@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>รายการแจ้งซ่อม</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<h1>รายการแจ้งซ่อม</h1>
+
+<table border="1" cellpadding="10">
+
+    <tr>
+        <th>ID</th>
+        <th>ชื่อผู้แจ้ง</th>
+        <th>ชื่อ</th>
+        <th>แผนก</th>
+        <th>อุปกรณ์</th>
+        <th>อาการเสีย</th>
+        <th>รูปภาพ</th>
+        <th>วิดีโอ</th>
+        <th>สถานะ</th>
+
+        {% if session["role"] == "admin" %}
+        <th>จัดการ</th>
+        {% endif %}
+    </tr>
+
+    {% for row in repairs %}
+
+    <tr>
+
+        <td>{{ row[0] }}</td>
+        <td>{{ row[1] }}</td>
+        <td>{{ row[2] }}</td>
+        <td>{{ row[3] }}</td>
+        <td>{{ row[4] }}</td>
+        <td>{{ row[5] }}</td>
+
+        <!-- รูปภาพ -->
+        <td align="center">
+
+            {% if row[6] %}
+
+            <a href="{{ url_for('uploaded_file', filename=row[6]) }}" target="_blank">
+
+                <img src="{{ url_for('uploaded_file', filename=row[6]) }}"
+                     width="130"
+                     class="repair-img">
+
+            </a>
+
+            {% else %}
+
+            ไม่มีรูป
+
+            {% endif %}
+
+        </td>
+
+        <!-- วิดีโอ -->
+        <td align="center">
+
+            {% if row[7] %}
+
+            <video width="220" controls>
+                <source src="{{ url_for('uploaded_file', filename=row[7]) }}" type="video/mp4">
+                เบราว์เซอร์ไม่รองรับวิดีโอ
+            </video>
+
+            {% else %}
+
+            ไม่มีวิดีโอ
+
+            {% endif %}
+
+        </td>
+
+        <!-- สถานะ -->
+        <td>{{ row[8] }}</td>
+
+        {% if session["role"] == "admin" %}
+        <td>
+
+            <a href="{{ url_for('status', id=row[0]) }}">
+                เปลี่ยนสถานะ
+            </a>
+
+            |
+
+            <a href="{{ url_for('delete', id=row[0]) }}"
+               onclick="return confirm('ต้องการลบรายการนี้หรือไม่?')">
+                ลบ
+            </a>
+
+        </td>
+        {% endif %}
+
+    </tr>
+
+    {% endfor %}
+
+</table>
+
+<br>
+
+{% if session["role"] == "admin" %}
+<a href="{{ url_for('dashboard_admin') }}">⬅ กลับ Dashboard</a>
+{% else %}
+<a href="{{ url_for('dashboard_user') }}">⬅ กลับ Dashboard</a>
+{% endif %}
+
+</body>
+</html> 

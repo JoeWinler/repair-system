@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>เปลี่ยนสถานะ</title>
+</head>
+
+<body>
+
+<h1>เปลี่ยนสถานะการซ่อม</h1>
+
+<p>ชื่อ : {{ repair[1] }}</p>
+
+<p>อุปกรณ์ : {{ repair[3] }}</p>
+
+<form method="POST">
+
+<select name="status">
+
+<option>รอดำเนินการ</option>
+
+<option>กำลังตรวจสอบ</option>
+
+<option>กำลังซ่อม</option>
+
+<option>ซ่อมเสร็จ</option>
+
+<option>ยกเลิก</option>
+
+</select>
+
+<br><br>
+
+<button type="submit">
+บันทึก
+</button>
+
+</form>

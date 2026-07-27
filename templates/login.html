@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบแจ้งซ่อมอุปกรณ์</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <form method="POST">
+
+        <h1>ระบบแจ้งซ่อมอุปกรณ์</h1>
+
+        <label>Username</label>
+        <input type="text" name="username" placeholder="กรอก Username" required>
+
+        <label>Password</label>
+        <input type="password" name="password" placeholder="กรอก Password" required>
+
+        <button type="submit">เข้าสู่ระบบ</button>
+
+    </form>
+
+</body>
+</html>
