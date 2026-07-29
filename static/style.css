@@ -127,3 +127,38 @@ table, th, td{
 .logout-btn:hover{
     background:#b02a37;
 }
+.table-card{
+    width:95%;
+    max-width:1200px;
+    margin:30px auto;
+    padding:25px;
+
+    background:rgba(255,255,255,0.95);
+
+    border-radius:20px;
+
+    box-shadow:0 0 20px rgba(0,0,0,.3);
+}
+th{
+    background:#007BFF;
+    color:white;
+    font-size:18px;
+}
+tr:nth-child(even){
+    background:#f2f2f2;
+}
+
+tr:hover{
+    background:#d9ecff;
+}
+table{
+    width:100%;
+    border-collapse:collapse;
+    overflow:hidden;
+    border-radius:12px;
+}
+th,
+td{
+    text-align:center;
+    vertical-align:middle;
+}
