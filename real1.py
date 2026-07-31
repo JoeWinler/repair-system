@@ -115,6 +115,10 @@ def repair():
 
         # รับรูปหลายรูป
         images = request.files.getlist("images")
+        print("จำนวนรูป =", len(images))
+
+        for image in images:
+            print(image.filename)
 
         # รับวิดีโอ
         video = request.files.get("video")
