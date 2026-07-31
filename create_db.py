@@ -36,7 +36,6 @@ CREATE TABLE repairs (
     department TEXT NOT NULL,
     equipment TEXT NOT NULL,
     problem TEXT NOT NULL,
-    image TEXT,
     video TEXT,
     status TEXT DEFAULT 'รอดำเนินการ'
 )

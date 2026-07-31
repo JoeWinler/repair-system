@@ -231,9 +231,36 @@ def repair_list():
 
     repairs = cursor.fetchall()
 
+    repair_data = []
+
+    for repair in repairs:
+
+        cursor.execute("""
+            SELECT filename
+            FROM repair_images
+            WHERE repair_id=?
+        """, (repair[0],))
+
+        images = [row[0] for row in cursor.fetchall()]
+
+        repair_data.append({
+            "repair": repair,
+            "images": images
+        })
+
     conn.close()
 
-    return render_template("list.html", repairs=repairs)
+    return render_template(
+        "list.html",
+        repairs=repair_data
+    )
+
+    conn.close()
+
+    return render_template(
+        "list.html",
+        repairs=repair_data
+    )
 
 
 # ==========================

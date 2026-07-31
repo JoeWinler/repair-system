@@ -46,23 +46,43 @@
         <!-- รูปภาพ -->
         <td align="center">
 
-            {% if row[6] %}
+            {% for item in repairs %}
 
-            <a href="{{ url_for('uploaded_file', filename=row[6]) }}" target="_blank">
+{% set row = item.repair %}
 
-                <img src="{{ url_for('uploaded_file', filename=row[6]) }}"
-                     width="130"
-                     class="repair-img">
+<td>
 
-            </a>
+{% if item.images %}
 
-            {% else %}
+    {% for item in repairs %}
 
-            ไม่มีรูป
+    {% set row = item.repair %}
 
-            {% endif %}
+        <td align="center">
 
-        </td>
+{% if item.images %}
+
+    {% for img in item.images %}
+
+    <a href="{{ url_for('uploaded_file', filename=img) }}"
+       target="_blank">
+
+        <img src="{{ url_for('uploaded_file', filename=img) }}"
+             width="120"
+             class="repair-img"
+             style="margin:5px;">
+
+    </a>
+
+    {% endfor %}
+
+    {% else %}
+
+    ไม่มีรูป
+
+    {% endif %}
+
+    </td>
 
         <!-- วิดีโอ -->
         <td align="center">
