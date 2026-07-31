@@ -190,16 +190,15 @@ def repair():
 
         cursor.execute("""
         INSERT INTO repairs
-        (username, fullname, department, equipment, problem, image, video)
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        (username, fullname, department, equipment, problem, video)
+        VALUES (?, ?, ?, ?, ?, ?)
         """, (
-            username,
-            fullname,
-            department,
-            equipment,
-            problem,
-            filename,
-            video_filename
+        session["username"],
+        fullname,
+        department,
+        equipment,
+        problem,
+        video_filename
         ))
         conn.commit()
         conn.close()
