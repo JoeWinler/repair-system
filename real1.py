@@ -113,13 +113,64 @@ def repair():
         equipment = request.form["equipment"]
         problem = request.form["problem"]
 
-        image = request.files.get("image")
+        # ---------- รับรูปหลายรูป ----------
+        images = request.files.getlist("images")
 
-        filename = ""
+        # ---------- รับวิดีโอ ----------
+        video = request.files.get("video")
 
-        if image and image.filename != "":
-            filename = secure_filename(image.filename)
-            image.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+        video_filename = ""
+
+        if video and video.filename != "":
+            video_filename = secure_filename(video.filename)
+            video.save(os.path.join(app.config["UPLOAD_FOLDER"], video_filename))
+
+        conn = get_db()
+        cursor = conn.cursor()
+
+        # เพิ่มข้อมูลการแจ้งซ่อม
+        cursor.execute("""
+            INSERT INTO repairs
+            (username, fullname, department, equipment, problem, video)
+            VALUES (?, ?, ?, ?, ?, ?)
+        """, (
+            session["username"],
+            fullname,
+            department,
+            equipment,
+            problem,
+            video_filename
+        ))
+
+        # id ของรายการแจ้งซ่อมที่เพิ่งสร้าง
+        repair_id = cursor.lastrowid
+
+        # บันทึกรูปทั้งหมด
+        for image in images:
+
+            if image and image.filename != "":
+
+                filename = secure_filename(image.filename)
+
+                image.save(
+                    os.path.join(app.config["UPLOAD_FOLDER"], filename)
+                )
+
+                cursor.execute("""
+                    INSERT INTO repair_images
+                    (repair_id, filename)
+                    VALUES (?, ?)
+                """, (
+                    repair_id,
+                    filename
+                ))
+
+        conn.commit()
+        conn.close()
+
+        return redirect(url_for("repair_list"))
+
+        return render_template("repair.html")
 
         # -------------------------
         # รับไฟล์วิดีโอ
