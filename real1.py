@@ -113,26 +113,27 @@ def repair():
         equipment = request.form["equipment"]
         problem = request.form["problem"]
 
-        # ---------- รับรูปหลายรูป ----------
+        # รับรูปหลายรูป
         images = request.files.getlist("images")
 
-        # ---------- รับวิดีโอ ----------
+        # รับวิดีโอ
         video = request.files.get("video")
-
         video_filename = ""
 
         if video and video.filename != "":
             video_filename = secure_filename(video.filename)
-            video.save(os.path.join(app.config["UPLOAD_FOLDER"], video_filename))
+            video.save(
+                os.path.join(app.config["UPLOAD_FOLDER"], video_filename)
+            )
 
         conn = get_db()
         cursor = conn.cursor()
 
-        # เพิ่มข้อมูลการแจ้งซ่อม
+        # เพิ่มข้อมูลแจ้งซ่อม
         cursor.execute("""
-            INSERT INTO repairs
-            (username, fullname, department, equipment, problem, video)
-            VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO repairs
+        (username, fullname, department, equipment, problem, video)
+        VALUES (?, ?, ?, ?, ?, ?)
         """, (
             session["username"],
             fullname,
@@ -142,7 +143,6 @@ def repair():
             video_filename
         ))
 
-        # id ของรายการแจ้งซ่อมที่เพิ่งสร้าง
         repair_id = cursor.lastrowid
 
         # บันทึกรูปทั้งหมด
@@ -157,9 +157,9 @@ def repair():
                 )
 
                 cursor.execute("""
-                    INSERT INTO repair_images
-                    (repair_id, filename)
-                    VALUES (?, ?)
+                INSERT INTO repair_images
+                (repair_id, filename)
+                VALUES (?, ?)
                 """, (
                     repair_id,
                     filename
@@ -167,10 +167,6 @@ def repair():
 
         conn.commit()
         conn.close()
-
-        return redirect(url_for("repair_list"))
-
-        return render_template("repair.html")
 
         # -------------------------
         # รับไฟล์วิดีโอ
@@ -300,24 +296,40 @@ def uploaded_file(filename):
 # ลบรายการ
 # ==========================
 @app.route("/delete/<int:id>")
-def delete(id):
+def delete():
 
     if session.get("role") != "admin":
         return "ไม่มีสิทธิ์"
-    
+
     conn = get_db()
     cursor = conn.cursor()
 
-    cursor.execute("SELECT image FROM repairs WHERE id=?", (id,))
-    row = cursor.fetchone()
+    cursor.execute(
+        "SELECT filename FROM repair_images WHERE repair_id=?",
+        (id,)
+    )
 
-    if row and row[0]:
-        image_path = os.path.join(app.config["UPLOAD_FOLDER"], row[0])
+    images = cursor.fetchall()
 
-        if os.path.exists(image_path):
-            os.remove(image_path)
+    for img in images:
 
-    cursor.execute("DELETE FROM repairs WHERE id=?", (id,))
+        path = os.path.join(
+            app.config["UPLOAD_FOLDER"],
+            img[0]
+        )
+
+        if os.path.exists(path):
+            os.remove(path)
+
+    cursor.execute(
+        "DELETE FROM repair_images WHERE repair_id=?",
+        (id,)
+    )
+
+    cursor.execute(
+        "DELETE FROM repairs WHERE id=?",
+        (id,)
+    )
 
     conn.commit()
     conn.close()
