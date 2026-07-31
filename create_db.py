@@ -42,6 +42,15 @@ CREATE TABLE repairs (
 )
 """)
 
+cursor.execute("""
+CREATE TABLE repair_images (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    repair_id INTEGER,
+    filename TEXT,
+    FOREIGN KEY(repair_id) REFERENCES repairs(id)
+)
+""")
+
 conn.commit()
 conn.close()
 
