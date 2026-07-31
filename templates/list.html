@@ -8,10 +8,9 @@
 <body>
 
 <h1>รายการแจ้งซ่อม</h1>
+
 <div class="table-card">
-    <table>
-        จัดทำโดยเเผนกวิชาช่างอิเล็กทรอนิกส์
-    </table>
+    จัดทำโดยแผนกวิชาช่างอิเล็กทรอนิกส์
 </div>
 
 <table border="1" cellpadding="10">
@@ -32,7 +31,9 @@
         {% endif %}
     </tr>
 
-    {% for row in repairs %}
+    {% for item in repairs %}
+
+    {% set row = item.repair %}
 
     <tr>
 
@@ -43,80 +44,64 @@
         <td>{{ row[4] }}</td>
         <td>{{ row[5] }}</td>
 
-        <!-- รูปภาพ -->
-        <td align="center">
+        <!-- รูปหลายรูป -->
+        <td>
 
-            {% for item in repairs %}
+        {% if item.images %}
 
-{% set row = item.repair %}
+            {% for img in item.images %}
 
-<td>
+            <a href="{{ url_for('uploaded_file', filename=img) }}" target="_blank">
 
-{% if item.images %}
+                <img src="{{ url_for('uploaded_file', filename=img) }}"
+                     width="120"
+                     class="repair-img"
+                     style="margin:4px;">
 
-    {% for item in repairs %}
+            </a>
 
-    {% set row = item.repair %}
+            {% endfor %}
 
-        <td align="center">
+        {% else %}
 
-{% if item.images %}
+            ไม่มีรูป
 
-    {% for img in item.images %}
+        {% endif %}
 
-    <a href="{{ url_for('uploaded_file', filename=img) }}"
-       target="_blank">
-
-        <img src="{{ url_for('uploaded_file', filename=img) }}"
-             width="120"
-             class="repair-img"
-             style="margin:5px;">
-
-    </a>
-
-    {% endfor %}
-
-    {% else %}
-
-    ไม่มีรูป
-
-    {% endif %}
-
-    </td>
+        </td>
 
         <!-- วิดีโอ -->
-        <td align="center">
+        <td>
 
-            {% if row[7] %}
+        {% if row[6] %}
 
             <video width="220" controls>
-                <source src="{{ url_for('uploaded_file', filename=row[7]) }}" type="video/mp4">
-                เบราว์เซอร์ไม่รองรับวิดีโอ
+                <source src="{{ url_for('uploaded_file', filename=row[6]) }}" type="video/mp4">
             </video>
 
-            {% else %}
+        {% else %}
 
             ไม่มีวิดีโอ
 
-            {% endif %}
+        {% endif %}
 
         </td>
 
         <!-- สถานะ -->
-        <td>{{ row[8] }}</td>
+        <td>{{ row[7] }}</td>
 
         {% if session["role"] == "admin" %}
         <td>
 
-            <a href="{{ url_for('status', id=row[0]) }}">
-                เปลี่ยนสถานะ
-            </a>
+            <a href="{{ url_for('status', id=row[0]) }}">เปลี่ยนสถานะ</a>
 
             |
 
             <a href="{{ url_for('delete', id=row[0]) }}"
                onclick="return confirm('ต้องการลบรายการนี้หรือไม่?')">
+
                 ลบ
+
             </a>
 
         </td>
@@ -137,4 +122,4 @@
 {% endif %}
 
 </body>
-</html> 
+</html>

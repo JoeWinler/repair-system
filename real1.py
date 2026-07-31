@@ -253,16 +253,7 @@ def repair_list():
     return render_template(
         "list.html",
         repairs=repair_data
-    )
-
-    conn.close()
-
-    return render_template(
-        "list.html",
-        repairs=repair_data
-    )
-
-
+    )       
 # ==========================
 # เปลี่ยนสถานะ
 # ==========================
