@@ -188,18 +188,6 @@ def repair():
 
         username = session["username"]
 
-        cursor.execute("""
-        INSERT INTO repairs
-        (username, fullname, department, equipment, problem, video)
-        VALUES (?, ?, ?, ?, ?, ?)
-        """, (
-        session["username"],
-        fullname,
-        department,
-        equipment,
-        problem,
-        video_filename
-        ))
         conn.commit()
         conn.close()
 
@@ -299,7 +287,7 @@ def uploaded_file(filename):
 # ลบรายการ
 # ==========================
 @app.route("/delete/<int:id>")
-def delete():
+def delete(id):
 
     if session.get("role") != "admin":
         return "ไม่มีสิทธิ์"
@@ -307,6 +295,7 @@ def delete():
     conn = get_db()
     cursor = conn.cursor()
 
+    # ดึงรูปทั้งหมดของรายการนี้
     cursor.execute(
         "SELECT filename FROM repair_images WHERE repair_id=?",
         (id,)
@@ -314,21 +303,20 @@ def delete():
 
     images = cursor.fetchall()
 
+    # ลบไฟล์รูป
     for img in images:
+        image_path = os.path.join(app.config["UPLOAD_FOLDER"], img[0])
 
-        path = os.path.join(
-            app.config["UPLOAD_FOLDER"],
-            img[0]
-        )
+        if os.path.exists(image_path):
+            os.remove(image_path)
 
-        if os.path.exists(path):
-            os.remove(path)
-
+    # ลบข้อมูลรูปในฐานข้อมูล
     cursor.execute(
         "DELETE FROM repair_images WHERE repair_id=?",
         (id,)
     )
 
+    # ลบข้อมูลแจ้งซ่อม
     cursor.execute(
         "DELETE FROM repairs WHERE id=?",
         (id,)
