@@ -31,13 +31,20 @@ VALUES (?, ?, ?)
 cursor.execute("""
 CREATE TABLE repairs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT NOT NULL,
-    fullname TEXT NOT NULL,
-    department TEXT NOT NULL,
-    equipment TEXT NOT NULL,
-    problem TEXT NOT NULL,
+    username TEXT,
+    fullname TEXT,
+    department TEXT,
+    equipment TEXT,
+    problem TEXT,
     video TEXT,
-    status TEXT DEFAULT 'รอดำเนินการ'
+    status TEXT DEFAULT 'รอดำเนินการ',
+
+    parts TEXT,
+    parts_price REAL DEFAULT 0,
+    labor_price REAL DEFAULT 0,
+    discount REAL DEFAULT 0,
+    total_price REAL DEFAULT 0,
+    note TEXT
 )
 """)
 
