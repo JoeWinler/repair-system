@@ -100,6 +100,7 @@ def dashboard_user():
 # ==========================
 # แจ้งซ่อม
 # ==========================
+
 @app.route("/repair", methods=["GET", "POST"])
 def repair():
 
@@ -117,23 +118,24 @@ def repair():
         images = request.files.getlist("images")
         print("จำนวนรูป =", len(images))
 
-        for image in images:
-            print(image.filename)
-
         # รับวิดีโอ
         video = request.files.get("video")
         video_filename = ""
 
         if video and video.filename != "":
             video_filename = secure_filename(video.filename)
+
             video.save(
-                os.path.join(app.config["UPLOAD_FOLDER"], video_filename)
+                os.path.join(
+                    app.config["UPLOAD_FOLDER"],
+                    video_filename
+                )
             )
 
         conn = get_db()
         cursor = conn.cursor()
 
-        # เพิ่มข้อมูลแจ้งซ่อม
+        # บันทึกข้อมูลแจ้งซ่อม
         cursor.execute("""
         INSERT INTO repairs
         (username, fullname, department, equipment, problem, video)
@@ -149,15 +151,18 @@ def repair():
 
         repair_id = cursor.lastrowid
 
-        # บันทึกรูปทั้งหมด
+        # บันทึกรูปทุกภาพ
         for image in images:
 
-            if image and image.filename != "":
+            if image.filename != "":
 
                 filename = secure_filename(image.filename)
 
                 image.save(
-                    os.path.join(app.config["UPLOAD_FOLDER"], filename)
+                    os.path.join(
+                        app.config["UPLOAD_FOLDER"],
+                        filename
+                    )
                 )
 
                 cursor.execute("""
@@ -172,29 +177,9 @@ def repair():
         conn.commit()
         conn.close()
 
-        # -------------------------
-        # รับไฟล์วิดีโอ
-        # -------------------------
-        video = request.files.get("video")
-
-        video_filename = ""
-
-        if video and video.filename != "":
-            video_filename = secure_filename(video.filename)
-            video.save(os.path.join(app.config["UPLOAD_FOLDER"], video_filename))
-
-        conn = get_db()
-        cursor = conn.cursor()
-
-        username = session["username"]
-
-        conn.commit()
-        conn.close()
-
         return redirect(url_for("repair_list"))
 
     return render_template("repair.html")
-
 
 # ==========================
 # รายการแจ้งซ่อม
@@ -278,13 +263,15 @@ def status(id):
 # ==========================
 # แสดงรูปภาพ
 # ==========================
+
+from flask import send_from_directory
 @app.route("/uploads/<path:filename>")
 def uploaded_file(filename):
     return send_from_directory(
         app.config["UPLOAD_FOLDER"],
         filename
     )
-from flask import send_from_directory
+
 # ==========================
 # ลบรายการ
 # ==========================
