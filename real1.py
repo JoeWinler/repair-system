@@ -229,12 +229,12 @@ def repair_list():
 # ==========================
 # เปลี่ยนสถานะ
 # ==========================
-@app.route("/status/<int:id>", methods=["GET", "POST"]) 
+@app.route("/status/<int:id>", methods=["GET", "POST"])
 def status(id):
 
     if session.get("role") != "admin":
         return "ไม่มีสิทธิ์"
-    
+
     conn = get_db()
     cursor = conn.cursor()
 
@@ -242,10 +242,35 @@ def status(id):
 
         new_status = request.form["status"]
 
-        cursor.execute(
-            "UPDATE repairs SET status=? WHERE id=?",
-            (new_status, id)
-        )
+        parts = request.form["parts"]
+        parts_price = float(request.form["parts_price"])
+        labor_price = float(request.form["labor_price"])
+        discount = float(request.form["discount"])
+        note = request.form["note"]
+
+        total_price = parts_price + labor_price - discount
+
+        cursor.execute("""
+        UPDATE repairs
+        SET
+            status=?,
+            parts=?,
+            parts_price=?,
+            labor_price=?,
+            discount=?,
+            total_price=?,
+            note=?
+        WHERE id=?
+        """, (
+            new_status,
+            parts,
+            parts_price,
+            labor_price,
+            discount,
+            total_price,
+            note,
+            id
+        ))
 
         conn.commit()
         conn.close()

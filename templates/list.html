@@ -25,6 +25,12 @@
         <th>รูปภาพ</th>
         <th>วิดีโอ</th>
         <th>สถานะ</th>
+        <th>อะไหล่</th>
+        <th>ค่าอะไหล่</th>
+        <th>ค่าแรง</th>
+        <th>ส่วนลด</th>
+        <th>ยอดรวม</th>
+        <th>หมายเหตุ</th>
 
         {% if session["role"] == "admin" %}
         <th>จัดการ</th>
@@ -90,15 +96,35 @@
         <!-- สถานะ -->
         <td>{{ row[7] }}</td>
 
+        <td>
+            {{ row[8] if row[8] else "-" }}
+        </td>
+
+        <td>{{ row[9] }} บาท</td>
+
+        <td>{{ row[10] }} บาท</td>
+
+        <td>{{ row[11] }} บาท</td>
+
+        <td>
+            <b style="color:red">
+                {{ row[12] }} บาท
+            </b>
+        </td>
+
+        <td>{{ row[13] }}</td>
+
         {% if session["role"] == "admin" %}
         <td>
 
-            <a href="{{ url_for('status', id=row[0]) }}">เปลี่ยนสถานะ</a>
+            <a href="{{ url_for('status', id=row[0]) }}">
+                เปลี่ยนสถานะ
+            </a>
 
             |
 
             <a href="{{ url_for('delete', id=row[0]) }}"
-               onclick="return confirm('ต้องการลบรายการนี้หรือไม่?')">
+                onclick="return confirm('ต้องการลบรายการนี้หรือไม่?')">
 
                 ลบ
 
@@ -106,8 +132,7 @@
 
         </td>
         {% endif %}
-
-    </tr>
+        </tr>
 
     {% endfor %}
 
