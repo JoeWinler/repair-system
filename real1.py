@@ -225,7 +225,55 @@ def repair_list():
     return render_template(
         "list.html",
         repairs=repair_data
-    )       
+    )   
+
+# ==========================
+# รายละเอียดงานซ่อม
+# ==========================
+@app.route("/detail/<int:id>")
+def detail(id):
+
+    if "username" not in session:
+        return redirect(url_for("login"))
+
+    conn = get_db()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "SELECT * FROM repairs WHERE id=?",
+        (id,)
+    )
+
+    repair = cursor.fetchone()
+
+    if repair is None:
+        conn.close()
+        return "ไม่พบข้อมูล"
+
+    # ถ้าเป็น user ให้ดูได้เฉพาะของตัวเอง
+    if session["role"] != "admin":
+
+        if repair[1] != session["username"]:
+
+            conn.close()
+            return "ไม่มีสิทธิ์"
+
+    cursor.execute("""
+        SELECT filename
+        FROM repair_images
+        WHERE repair_id=?
+    """, (id,))
+
+    images = [row[0] for row in cursor.fetchall()]
+
+    conn.close()
+
+    return render_template(
+        "detail.html",
+        repair=repair,
+        images=images
+    )
+    
 # ==========================
 # เปลี่ยนสถานะ
 # ==========================
@@ -358,3 +406,4 @@ def logout():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
+

@@ -1,149 +1,175 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <title>รายการแจ้งซ่อม</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<meta charset="UTF-8">
+<title>รายการแจ้งซ่อม</title>
+
+<link rel="stylesheet"
+href="{{ url_for('static', filename='style.css') }}">
+
 </head>
+
 <body>
 
 <h1>รายการแจ้งซ่อม</h1>
 
-<div class="table-card">
-    จัดทำโดยแผนกวิชาช่างอิเล็กทรอนิกส์
-</div>
-
 <table border="1" cellpadding="10">
 
-    <tr>
-        <th>ID</th>
-        <th>ชื่อผู้แจ้ง</th>
-        <th>ชื่อ</th>
-        <th>แผนก</th>
-        <th>อุปกรณ์</th>
-        <th>อาการเสีย</th>
-        <th>รูปภาพ</th>
-        <th>วิดีโอ</th>
-        <th>สถานะ</th>
-        <th>อะไหล่</th>
-        <th>ค่าอะไหล่</th>
-        <th>ค่าแรง</th>
-        <th>ส่วนลด</th>
-        <th>ยอดรวม</th>
-        <th>หมายเหตุ</th>
+<tr>
 
-        {% if session["role"] == "admin" %}
-        <th>จัดการ</th>
-        {% endif %}
-    </tr>
+<th>ID</th>
+<th>ผู้แจ้ง</th>
+<th>ชื่อ</th>
+<th>แผนก</th>
+<th>อุปกรณ์</th>
+<th>อาการเสีย</th>
+<th>รูปภาพ</th>
+<th>วิดีโอ</th>
+<th>สถานะ</th>
+<th>รายละเอียด</th>
 
-    {% for item in repairs %}
+{% if session["role"] == "admin" %}
+<th>จัดการ</th>
+{% endif %}
 
-    {% set row = item.repair %}
+</tr>
 
-    <tr>
+{% for item in repairs %}
 
-        <td>{{ row[0] }}</td>
-        <td>{{ row[1] }}</td>
-        <td>{{ row[2] }}</td>
-        <td>{{ row[3] }}</td>
-        <td>{{ row[4] }}</td>
-        <td>{{ row[5] }}</td>
+{% set row = item.repair %}
 
-        <!-- รูปหลายรูป -->
-        <td>
+<tr>
 
-        {% if item.images %}
+<td>{{ row[0] }}</td>
 
-            {% for img in item.images %}
+<td>{{ row[1] }}</td>
 
-            <a href="{{ url_for('uploaded_file', filename=img) }}" target="_blank">
+<td>{{ row[2] }}</td>
 
-                <img src="{{ url_for('uploaded_file', filename=img) }}"
-                     width="120"
-                     class="repair-img"
-                     style="margin:4px;">
+<td>{{ row[3] }}</td>
 
-            </a>
+<td>{{ row[4] }}</td>
 
-            {% endfor %}
+<td>{{ row[5] }}</td>
 
-        {% else %}
+<!-- รูปหลายรูป -->
 
-            ไม่มีรูป
+<td>
 
-        {% endif %}
+{% if item.images %}
 
-        </td>
+{% for img in item.images %}
 
-        <!-- วิดีโอ -->
-        <td>
+<a href="{{ url_for('uploaded_file', filename=img) }}"
+target="_blank">
 
-        {% if row[6] %}
+<img
+src="{{ url_for('uploaded_file', filename=img) }}"
+width="100"
+style="margin:5px;border-radius:8px;">
 
-            <video width="220" controls>
-                <source src="{{ url_for('uploaded_file', filename=row[6]) }}" type="video/mp4">
-            </video>
+</a>
 
-        {% else %}
+{% endfor %}
 
-            ไม่มีวิดีโอ
+{% else %}
 
-        {% endif %}
+ไม่มีรูป
 
-        </td>
+{% endif %}
 
-        <!-- สถานะ -->
-        <td>{{ row[7] }}</td>
+</td>
 
-        <td>
-            {{ row[8] if row[8] else "-" }}
-        </td>
+<!-- วิดีโอ -->
 
-        <td>{{ row[9] }} บาท</td>
+<td>
 
-        <td>{{ row[10] }} บาท</td>
+{% if row[6] %}
 
-        <td>{{ row[11] }} บาท</td>
+<video width="220" controls>
 
-        <td>
-            <b style="color:red">
-                {{ row[12] }} บาท
-            </b>
-        </td>
+<source
+src="{{ url_for('uploaded_file', filename=row[6]) }}"
+type="video/mp4">
 
-        <td>{{ row[13] }}</td>
+</video>
 
-        {% if session["role"] == "admin" %}
-        <td>
+{% else %}
 
-            <a href="{{ url_for('status', id=row[0]) }}">
-                เปลี่ยนสถานะ
-            </a>
+ไม่มีวิดีโอ
 
-            |
+{% endif %}
 
-            <a href="{{ url_for('delete', id=row[0]) }}"
-                onclick="return confirm('ต้องการลบรายการนี้หรือไม่?')">
+</td>
 
-                ลบ
+<!-- สถานะ -->
 
-            </a>
+<td>
 
-        </td>
-        {% endif %}
-        </tr>
+{{ row[7] }}
 
-    {% endfor %}
+</td>
+
+<!-- ดูรายละเอียด -->
+
+<td>
+
+<a href="{{ url_for('detail', id=row[0]) }}">
+
+🔍 ดูรายละเอียด
+
+</a>
+
+</td>
+
+{% if session["role"] == "admin" %}
+
+<td>
+
+<a href="{{ url_for('status', id=row[0]) }}">
+
+เปลี่ยนสถานะ
+
+</a>
+
+|
+
+<a href="{{ url_for('delete', id=row[0]) }}"
+onclick="return confirm('ต้องการลบรายการนี้หรือไม่?')">
+
+ลบ
+
+</a>
+
+</td>
+
+{% endif %}
+
+</tr>
+
+{% endfor %}
 
 </table>
 
 <br>
 
-{% if session["role"] == "admin" %}
-<a href="{{ url_for('dashboard_admin') }}">⬅ กลับ Dashboard</a>
+{% if session["role"]=="admin" %}
+
+<a href="{{ url_for('dashboard_admin') }}">
+
+⬅ กลับ Dashboard
+
+</a>
+
 {% else %}
-<a href="{{ url_for('dashboard_user') }}">⬅ กลับ Dashboard</a>
+
+<a href="{{ url_for('dashboard_user') }}">
+
+⬅ กลับ Dashboard
+
+</a>
+
 {% endif %}
 
 </body>

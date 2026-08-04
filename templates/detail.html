@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>รายละเอียดงานซ่อม</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+    <style>
+
+        .container{
+            width:90%;
+            max-width:1100px;
+            margin:auto;
+            background:#fff;
+            padding:25px;
+            border-radius:12px;
+            box-shadow:0 0 15px rgba(0,0,0,.15);
+        }
+
+        h1{
+            text-align:center;
+            margin-bottom:30px;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+        }
+
+        td{
+            padding:12px;
+            border-bottom:1px solid #ddd;
+        }
+
+        td:first-child{
+            width:220px;
+            font-weight:bold;
+            background:#f5f5f5;
+        }
+
+        .gallery{
+
+            display:flex;
+            flex-wrap:wrap;
+            gap:15px;
+            margin-top:10px;
+
+        }
+
+        .gallery img{
+
+            width:180px;
+            border-radius:10px;
+            transition:.3s;
+
+        }
+
+        .gallery img:hover{
+
+            transform:scale(1.05);
+
+        }
+
+        video{
+
+            margin-top:15px;
+            border-radius:10px;
+
+        }
+
+        .price{
+
+            color:red;
+            font-size:28px;
+            font-weight:bold;
+
+        }
+
+        .status{
+
+            color:green;
+            font-weight:bold;
+            font-size:20px;
+
+        }
+
+        .back{
+
+            display:inline-block;
+            margin-top:25px;
+            padding:10px 20px;
+            background:#1976d2;
+            color:white;
+            text-decoration:none;
+            border-radius:8px;
+
+        }
+
+        .back:hover{
+
+            background:#125aa0;
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>รายละเอียดการแจ้งซ่อม</h1>
+
+<table>
+
+<tr>
+<td>เลขที่แจ้งซ่อม</td>
+<td>{{ repair[0] }}</td>
+</tr>
+
+<tr>
+<td>ผู้แจ้ง</td>
+<td>{{ repair[1] }}</td>
+</tr>
+
+<tr>
+<td>ชื่อ</td>
+<td>{{ repair[2] }}</td>
+</tr>
+
+<tr>
+<td>แผนก</td>
+<td>{{ repair[3] }}</td>
+</tr>
+
+<tr>
+<td>อุปกรณ์</td>
+<td>{{ repair[4] }}</td>
+</tr>
+
+<tr>
+<td>อาการเสีย</td>
+<td>{{ repair[5] }}</td>
+</tr>
+
+<tr>
+
+<td>รูปภาพ</td>
+
+<td>
+
+{% if images %}
+
+<div class="gallery">
+
+{% for img in images %}
+
+<a href="{{ url_for('uploaded_file', filename=img) }}"
+target="_blank">
+
+<img src="{{ url_for('uploaded_file', filename=img) }}">
+
+</a>
+
+{% endfor %}
+
+</div>
+
+{% else %}
+
+ไม่มีรูปภาพ
+
+{% endif %}
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>วิดีโอ</td>
+
+<td>
+
+{% if repair[6] %}
+
+<video width="500" controls>
+
+<source
+src="{{ url_for('uploaded_file', filename=repair[6]) }}"
+type="video/mp4">
+
+</video>
+
+{% else %}
+
+ไม่มีวิดีโอ
+
+{% endif %}
+
+</td>
+
+</tr>
+
+<tr>
+<td>สถานะ</td>
+<td class="status">{{ repair[7] }}</td>
+</tr>
+
+<tr>
+<td>อะไหล่ที่เปลี่ยน</td>
+<td>{{ repair[8] }}</td>
+</tr>
+
+<tr>
+<td>ราคาอะไหล่</td>
+<td>{{ repair[9] }} บาท</td>
+</tr>
+
+<tr>
+<td>ค่าแรง</td>
+<td>{{ repair[10] }} บาท</td>
+</tr>
+
+<tr>
+<td>ส่วนลด</td>
+<td>{{ repair[11] }} บาท</td>
+</tr>
+
+<tr>
+<td>ยอดชำระทั้งหมด</td>
+<td class="price">{{ repair[12] }} บาท</td>
+</tr>
+
+<tr>
+<td>หมายเหตุ</td>
+<td>{{ repair[13] }}</td>
+</tr>
+
+</table>
+
+<a href="{{ url_for('repair_list') }}" class="back">
+
+⬅ กลับหน้ารายการ
+
+</a>
+
+</div>
+
+</body>
+</html>
